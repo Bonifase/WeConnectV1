@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+
+{% block body  %}
+<div class="jumbotron text-center">
+<h3>Add Contact</h3>
+<form method="POST">
+  <div class="form.group">
+    <label for="username">Name</label>
+    <input type="text" name="name" class="form-control" id="name" value={{request.form.name}}>
+   </div>
+   <div class="form-group">
+     <label for="phone">Phone</label>
+     <input type="text" name="phone" class="form-control" id="phone" value={{request.form.phone}}>
+  <input type="submit" class="btn btn-primary" value="Submit" ></th>
+  <th><h4><a href="/index" class="btn btn-danger">Cancel</a></h4></th>    
+       
+</form>
+</div>
+{% endblock %}

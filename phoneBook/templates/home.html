@@ -1,0 +1,60 @@
+<html>
+    <head>
+        <meta charset="utf -8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>PhoneBook</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+         integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+         <link rel="stylesheet" href="style.css">
+        
+    </head>
+    <body>
+        <div class="container text-center">
+            <h3><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Dashboard <small>Add phone number</small></h3> 
+            <a class="btn btn-success" href="/add_contact">Create a New Contact</a>
+            <p><div class="text-left"><h5> Available Contacts</h5></div></p>
+            <hr>
+            <table class="table table-striped">
+                <tr>
+                    
+                    <th>Name</th>
+                    <th>Phone Number</th>
+                    <th>Edit Contact</th>
+                    <th>Remove Contact</th>
+        
+                    
+                </tr>
+               
+            {% for item in Lists %}
+            <tr>
+                <td>{{item.name}}</td>
+                <td>{{item.phone}}</td>
+                <td><a href="edit_contact/{{item.name}}" class="btn btn-default pullright">Edit Contact</a></td>
+                <td>
+                        <form action="{{url_for('delete_contact', Id=item.name)}}" method="POST">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <input type="submit" value="Delete Contact" class="btn btn-danger">
+                        </form>
+                </td>
+            </tr>
+            {% endfor %}
+            </table>
+        </div>
+        
+         
+         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"
+         integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+    </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

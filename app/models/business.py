@@ -42,7 +42,6 @@ class Business:
             return
         assert 0, 'Invalid name'
 
-
     @property
     def newname(self):
         return self._name
@@ -54,4 +53,4 @@ class Business:
         if match:
             self._name = value
             return
-        assert 0, 'Invalid name' 
+        assert 0, 'Invalid name'

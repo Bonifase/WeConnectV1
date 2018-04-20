@@ -104,7 +104,7 @@ def logout():
     username = data.get('username')
     password = data.get('password')
     # check if the user details exist in the list, otherwise deny access.
-    user = [x for x in User.users if x.username == username]
+    user = [user for user in User.users if user.username == username]
     if user:
         if password == user[0].password:
             session.clear()
@@ -200,7 +200,7 @@ def update_business(id):
 @app.route('/api/v1/auth/business/<int:id>/', methods=['DELETE'])
 @is_logged_in
 def delete_business(id):
-    mybusiness = [x for x in Business.businesses if x.id == id]
+    mybusiness = [business for business in Business.businesses if business.id == id]
     if mybusiness:
         mybusiness = mybusiness[0]
         Business.businesses.remove(mybusiness)

@@ -59,6 +59,26 @@ def login():
     else:
         return make_response(jsonify({"message": "Wrong Login Details"}), 409)
 
+# reset password
+@app.route('/api/v1/auth/reset_password', methods = ['POST'])
+def reset_password():
+    data = request.get_json()
+    email = data.get('email')
+    newpassword = data.get('newpassword')
+    if email is None:
+        return make_response(jsonify({"message": "Missing key"}), 409)
+    if type(newpassword) != str:
+        return make_response(jsonify({"message": "No Entry"}), 409)
+    user = [user for user in User.users if user.email == email]
+    if user:
+        try:
+            user[0].reset_password(newpassword)
+        except AssertionError as err:
+            return make_response(jsonify({"error": err.args[0]}), 409)
+        return make_response(jsonify({"message": "Reset Successful"}), 201)
+    else:
+        return make_response(jsonify({"message": "User with that email not found"}), 404)
+
 # check  if user is logged in
 
 
@@ -71,12 +91,12 @@ def is_logged_in(f):
             return make_response(jsonify({"Unauthorised": "Please login first"}), 401)
     return wrap
 
-# Reset password
+# Change password
 
 
-@app.route('/api/v1/auth/reset-password', methods=['POST'])
+@app.route('/api/v1/auth/change-password', methods=['POST'])
 @is_logged_in
-def reset_password():
+def change_password():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
@@ -216,7 +236,13 @@ def delete_business(id):
 def reviews(businessid):
     data = request.get_json()
     reviewbody = data.get("description")
-    # check if the review details already in the list, otherwise create the review object in the list
+
+    if reviewbody.strip() == "":
+        return make_response(jsonify({"error": "Empty review not allowed"}))
+
+    if len(reviewbody) < 5:
+        return make_response(jsonify({"error": "Review too short"}))
+
     mybusiness = [
         business for business in Business.businesses if business.id == businessid]
     if mybusiness:

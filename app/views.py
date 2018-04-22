@@ -22,7 +22,7 @@ def register_user():
     email = data.get('email')
     password = data.get('password')
     if username is None:
-        return make_response(jsonify({"error": "Missing key"}), 409)
+        return make_response(jsonify({"error": "Missing key"}), 500)
     if type(username) != str:
         return make_response(jsonify({"error": "username cannot be an integer"}), 409)
     if type(email) != str:
@@ -72,7 +72,7 @@ def reset_password():
     email = data.get('email')
     newpassword = data.get('newpassword')
     if email is None:
-        return make_response(jsonify({"message": "Missing key"}), 409)
+        return make_response(jsonify({"message": "Missing key"}), 500)
     if type(newpassword) != str:
         return make_response(jsonify({"message": "Wrong format"}), 409)
     user = [user for user in User.users if user.email == email]
@@ -107,7 +107,7 @@ def change_password():
     username = data.get('username')
     password = data.get('password')
     newpassword = data.get('newpassword')
-    user = [x for x in User.users if x.username == username]
+    user = [user for user in User.users if user.username == username]
     if user and password != user[0].password:
         return make_response(jsonify({"message": "Enter your Current Password"}), 409)
     elif newpassword == user[0].password:
@@ -151,7 +151,10 @@ def create_business():
     name = data.get("name")
     category = data.get("category")
     location = data.get("location")
-    description = data.get("description")
+    if name is None:
+        return make_response(jsonify({"error": "Missing key"}), 500)
+    if type(name) != str:
+        return make_response(jsonify({"error": "name cannot be an integer"}), 409)
     # check if the business details already in the list, otherwise create the object in the list
     available_names = [business.name for business in Business.businesses]
     if name in available_names:
@@ -160,11 +163,11 @@ def create_business():
     else:
         try:
             business = Business.register_business(
-                name, category, location, description)
+                name, category, location)
         except AssertionError as err:
             return make_response(jsonify({"error": err.args[0]}), 409)
         myresponse = {'name': business.name, 'category': business.category,
-                      'location': business.location, 'description': business.description}
+                      'location': business.location}
     return make_response(jsonify(myresponse), 201)
 
 # Get all the businesses
@@ -183,29 +186,27 @@ def view_businesses():
 # Get a business by id
 
 
-@app.route('/api/v1/auth/business/<int:id>/', methods=['GET'])
+@app.route('/api/v1/auth/businesses/<int:id>/', methods=['GET'])
 @is_logged_in
 def get_business(id):
     mybusiness = [business for business in Business.businesses if business.id == id]
     if mybusiness:
         mybusiness = mybusiness[0]
         return make_response(jsonify({"business": {'name': mybusiness.name,
-        'category': mybusiness.category, 'location': mybusiness.location, 
-        'description': mybusiness.description}}), 200)
+        'category': mybusiness.category, 'location': mybusiness.location}}), 200)
     else:
         return make_response(jsonify({"message": "Business not available", }), 404)
 
 # Update business
 
 
-@app.route('/api/v1/auth/business/<int:id>', methods=['PUT'])
+@app.route('/api/v1/auth/businesses/<int:id>', methods=['PUT'])
 @is_logged_in
 def update_business(id):
     data = request.get_json()
     newname = data.get("name")
     newcategory = data.get("category")
     newlocation = data.get("location")
-    newdescription = data.get("description")
     mybusiness = [business for business in Business.businesses if business.id == id]
     if mybusiness:
         available_names = [business.name for business in Business.businesses]
@@ -213,7 +214,7 @@ def update_business(id):
             return make_response(jsonify({"error": "Business already Exist, use another name"}), 409)
         try:
             mybusiness[0].update_business(
-            newname, newcategory, newlocation, newdescription)
+            newname, newcategory, newlocation)
         except AssertionError as err:
             return make_response(jsonify({"error": err.args[0]}), 409)
         return make_response(jsonify({"message": "Business Updated", }), 201)
@@ -223,7 +224,7 @@ def update_business(id):
 # Delete business
 
 
-@app.route('/api/v1/auth/business/<int:id>/', methods=['DELETE'])
+@app.route('/api/v1/auth/businesses/<int:id>', methods=['DELETE'])
 @is_logged_in
 def delete_business(id):
     mybusiness = [business for business in Business.businesses if business.id == id]
@@ -232,7 +233,7 @@ def delete_business(id):
         Business.businesses.remove(mybusiness)
         return make_response(jsonify({"message": "Business deleted", }), 200)
     else:
-        return make_response(jsonify({"message": "No such Business", }), 404)
+        return make_response(jsonify({"message": "There is no Business with that ID", }), 404)
 
 # Add a review for a business
 
@@ -242,6 +243,11 @@ def delete_business(id):
 def reviews(businessid):
     data = request.get_json()
     reviewbody = data.get("description")
+    password = data.get('password')
+    if reviewbody is None:
+        return make_response(jsonify({"error": "Check your entry"}), 409)
+    if type(reviewbody) != str:
+        return make_response(jsonify({"error": "Review cannot be an integer"}), 409)
 
     if reviewbody.strip() == "":
         return make_response(jsonify({"error": "Empty review not allowed"}))

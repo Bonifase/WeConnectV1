@@ -14,11 +14,11 @@ class AppTestCase(unittest.TestCase):
         app.testing = True
         self.app = app.test_client()
         self.data = {"name": "easyE", "category": "hardware",
-                     "location": "Mombasa", "description": "Selling hardware products"}
+                     "location": "Mombasa"}
         self.data1 = {"name": "A", "category": "software",
-                      "location": "Nakuru", "description": "Selling software products"}
+                      "location": "Nakuru"}
         self.data5 = {"name": "Andela", "category": "software",
-                      "location": "Nakuru", "description": "Selling software products"}
+                      "location": "Nakuru"}
         self.data6 = {"username": "john",
                       "email": "email@gmail.com", "password": "&._12345"}
 

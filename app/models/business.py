@@ -7,27 +7,25 @@ class Business:
     class_counter = 1
 
     @classmethod
-    def register_business(cls, name, category, location, description):
+    def register_business(cls, name, category, location):
         business = cls()
         business.name = name
         business.category = category
         business.location = location
-        business.description = description
         business.id = Business.class_counter
         cls.businesses.append(business)
         Business.class_counter += 1
         return business
 
-    def __init__(self, name=None, category=None, location=None, description=None):
+    def __init__(self, name=None, category=None, location=None):
         self._name = name
         self._category = category
         self._location = location
 
-    def update_business(self, newname, newcategory, newlocation, newdescription):
+    def update_business(self, newname, newcategory, newlocation):
         self.name = newname
         self.category = newcategory
         self.location = newlocation
-        self.description = newdescription
 
     @property
     def name(self):

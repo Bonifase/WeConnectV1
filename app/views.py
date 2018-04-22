@@ -83,7 +83,7 @@ def reset_password():
             return make_response(jsonify({"error": err.args[0]}), 409)
         return make_response(jsonify({"message": "Reset Successful"}), 201)
     else:
-        return make_response(jsonify({"message": "User with tat email does not exist"}), 404)
+        return make_response(jsonify({"message": "User with that email does not exist"}), 404)
 
 # check  if user is logged in
 

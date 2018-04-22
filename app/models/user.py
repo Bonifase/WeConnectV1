@@ -4,13 +4,16 @@ import re
 class User:
     users = []
 
+    class_counter = 1
     @classmethod
     def register_user(cls, username, email, password):
         user = cls()
         user.username = username
         user.email = email
         user.password = password
+        user.id = User.class_counter
         cls.users.append(user)
+        User.class_counter += 1
         return user
 
     def __init__(self, username=None, email=None, password=None):

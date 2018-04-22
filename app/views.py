@@ -22,9 +22,15 @@ def register_user():
     email = data.get('email')
     password = data.get('password')
     if username is None:
-        return make_response(jsonify({"message": "Missing key"}), 409)
+        return make_response(jsonify({"error": "Missing key"}), 409)
+    if type(username) != str:
+        return make_response(jsonify({"error": "username cannot be an integer"}), 409)
+    if type(email) != str:
+        return make_response(jsonify({"error": "email cannot be an integer"}), 409)
+    if type(password) != str:
+        return make_response(jsonify({"error": "password must be a string data type"}), 409)
     # check if the user details already in the list, otherwise add the details in the list
-    available_emails = [x.email for x in User.users]
+    available_emails = [user.email for user in User.users]
     if email in available_emails:
         return make_response(jsonify({"message": "Email already taken"}), 409)
     else:
@@ -46,7 +52,7 @@ def login():
     # check if the user details exist in the list, otherwise deny access.
     if data['username'] == "" or data['password'] == "":
         return make_response(jsonify({"message": "Incomplete entry"}), 401)
-    user = [x for x in User.users if x.username == username]
+    user = [user for user in User.users if user.username == username]
     if user:
         if password == user[0].password:
             session['logged_in'] = True
@@ -57,7 +63,7 @@ def login():
             return make_response(jsonify({"message": "Wrong Password"}), 409)
 
     else:
-        return make_response(jsonify({"message": "Wrong Login Details"}), 409)
+        return make_response(jsonify({"message": "Wrong username"}), 409)
 
 # reset password
 @app.route('/api/v1/auth/reset_password', methods = ['POST'])
@@ -68,7 +74,7 @@ def reset_password():
     if email is None:
         return make_response(jsonify({"message": "Missing key"}), 409)
     if type(newpassword) != str:
-        return make_response(jsonify({"message": "No Entry"}), 409)
+        return make_response(jsonify({"message": "Wrong format"}), 409)
     user = [user for user in User.users if user.email == email]
     if user:
         try:
@@ -77,7 +83,7 @@ def reset_password():
             return make_response(jsonify({"error": err.args[0]}), 409)
         return make_response(jsonify({"message": "Reset Successful"}), 201)
     else:
-        return make_response(jsonify({"message": "User with that email not found"}), 404)
+        return make_response(jsonify({"message": "User with tat email does not exist"}), 404)
 
 # check  if user is logged in
 

@@ -114,7 +114,7 @@ class AppTestCase(unittest.TestCase):
         response = self.app.post(
             '/api/v1/auth/login', data=json.dumps(self.data3), content_type='application/json')
         result = json.loads(response.data.decode())
-        self.assertEqual(result["message"], "Wrong Login Details")
+        self.assertEqual(result["message"], "Wrong username")
         self.assertEqual(response.status_code, 409)
 
     def test_logged_in_users(self):

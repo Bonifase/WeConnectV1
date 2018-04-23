@@ -1,5 +1,5 @@
 from flask import request, jsonify, make_response, session, logging
-import json
+import json, re
 from flask_login import LoginManager
 from functools import wraps
 
@@ -11,6 +11,7 @@ from .models import Review
 
 
 business_reviews = []
+
 
 # Endpoint to Register user and ssaving the details in a list called users
 
@@ -126,22 +127,9 @@ def change_password():
 @app.route('/api/v1/auth/logout', methods=['POST'])
 @is_logged_in
 def logout():
-    data = request.get_json()
-    username = data.get('username')
-    password = data.get('password')
-    # check if the user details exist in the list, otherwise deny access.
-    user = [user for user in User.users if user.username == username]
-    if user:
-        if password == user[0].password:
-            session.clear()
-            return make_response(jsonify({"message": "Logout Successful"}), 200)
-
-        else:
-            return make_response(jsonify({"message": "Login First"}), 404)
-
-    else:
-        return make_response(jsonify({"message": "User not found, Login First"}), 404)
-
+    session.clear()
+    
+    return make_response(jsonify({"message": "Logout Successful"}), 200)
 
 # Create new business
 @app.route('/api/v1/auth/businesses', methods=['POST'])
@@ -151,6 +139,7 @@ def create_business():
     name = data.get("name")
     category = data.get("category")
     location = data.get("location")
+
     if name is None:
         return make_response(jsonify({"error": "Missing key"}), 500)
     if type(name) != str:

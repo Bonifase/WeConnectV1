@@ -25,9 +25,10 @@ class AppTestCase(unittest.TestCase):
         self.data5 = {"username": "john",
                       "password": "&._12345", "newpassword": "123456789"}
         self.data6 = {"username": "john", "password": "123456789"}
-        self.data7 = {"username": "", "password": "123456789"}
+        self.data7 = {"username": "", "password": "123456789",
+                        "email": "emails@gmail.com"}
         self.data8 = {"username": "john",
-                      "email": "uhiuhuyguygy", "newpassword": "123456789"}
+                      "email": "uhiuhuyguygy", "password": "&__456789"}
         self.data9 = {"username": "john",
                       "password": "._12345", "newpassword": "123456789"}
         self.data10 = {"username": "john",
@@ -48,10 +49,10 @@ class AppTestCase(unittest.TestCase):
         response = self.app.post(
             '/api/v1/auth/register', data=json.dumps(self.data4), content_type='application/json')
         result = json.loads(response.data.decode())
-        self.assertEqual(result["message"], "Missing key")
-        self.assertEqual(response.status_code, 409)
+        self.assertEqual(result["error"], "Missing key")
+        self.assertEqual(response.status_code, 500)
 
-    def test_ivalid_username(self):
+    def test_invalid_username(self):
         response = self.app.post(
             '/api/v1/auth/register', data=json.dumps(self.data7), content_type='application/json')
         result = json.loads(response.data.decode())
@@ -120,7 +121,7 @@ class AppTestCase(unittest.TestCase):
     def test_logged_in_users(self):
         self.app.post('/api/v1/auth/register',
                       data=json.dumps(self.data), content_type='application/json')
-        response = self.app.post('/api/v1/auth/reset-password',
+        response = self.app.post('/api/v1/auth/change-password',
                                  data=json.dumps(self.data5), content_type='application/json')
         result = json.loads(response.data.decode())
         self.assertEqual(result["Unauthorised"], "Please login first")
@@ -131,7 +132,7 @@ class AppTestCase(unittest.TestCase):
                       data=json.dumps(self.data), content_type='application/json')
         self.app.post('/api/v1/auth/login', data=json.dumps(self.data),
                       content_type='application/json')
-        response1 = self.app.post('/api/v1/auth/reset-password',
+        response1 = self.app.post('/api/v1/auth/change-password',
                                   data=json.dumps(self.data5), content_type='application/json')
         result1 = json.loads(response1.data.decode())
         self.assertEqual(result1["message"], "Reset Successful")
@@ -147,7 +148,7 @@ class AppTestCase(unittest.TestCase):
                       data=json.dumps(self.data), content_type='application/json')
         self.app.post('/api/v1/auth/login', data=json.dumps(self.data),
                       content_type='application/json')
-        response1 = self.app.post('/api/v1/auth/reset-password',
+        response1 = self.app.post('/api/v1/auth/change-password',
                                   data=json.dumps(self.data9), content_type='application/json')
         result1 = json.loads(response1.data.decode())
         self.assertEqual(result1["message"], "Enter your Current Password")
@@ -158,7 +159,7 @@ class AppTestCase(unittest.TestCase):
                       data=json.dumps(self.data), content_type='application/json')
         self.app.post('/api/v1/auth/login', data=json.dumps(self.data),
                       content_type='application/json')
-        response1 = self.app.post('/api/v1/auth/reset-password',
+        response1 = self.app.post('/api/v1/auth/change-password',
                                   data=json.dumps(self.data10), content_type='application/json')
         result1 = json.loads(response1.data.decode())
         self.assertEqual(result1["message"], "Use a Different New Password")
@@ -174,24 +175,7 @@ class AppTestCase(unittest.TestCase):
         self.assertEqual(result1["message"], "Logout Successful")
         self.assertEqual(response1.status_code, 200)
 
-    def test_logout_wrong_user(self):
-        self.app.post(
-            '/api/v1/auth/login', data=json.dumps(self.data), content_type='application/json')
-        response = self.app.post(
-            '/api/v1/auth/logout', data=json.dumps(self.data12), content_type='application/json')
-        result = json.loads(response.data.decode())
-        self.assertEqual(result["message"], "Login First")
-        self.assertEqual(response.status_code, 404)
-
-    def test_logout_wrong_user(self):
-        self.app.post(
-            '/api/v1/auth/login', data=json.dumps(self.data), content_type='application/json')
-        response1 = self.app.post(
-            '/api/v1/auth/logout', data=json.dumps(self.data11), content_type='application/json')
-        result1 = json.loads(response1.data.decode())
-        self.assertEqual(result1["message"], "User not found, Login First")
-        self.assertEqual(response1.status_code, 404)
-
+    
 
 if __name__ == '__main__':
     unittest.main()

@@ -48,23 +48,24 @@ def register_user():
 @app.route('/api/v1/auth/login',  methods=['POST'])
 def login():
     data = request.get_json()
-    username = data.get('username')
+    email = data.get('email')
     password = data.get('password')
     # check if the user details exist in the list, otherwise deny access.
-    if data['username'] == "" or data['password'] == "":
+    if email == "" or password == "":
         return make_response(jsonify({"message": "Incomplete entry"}), 401)
-    user = [user for user in User.users if user.username == username]
+    user = [user for user in User.users if user.email == email]
     if user:
         if password == user[0].password:
             session['logged_in'] = True
-            session['username'] = username
+            session['user_id'] = user[0].id
             return make_response(jsonify({"message": "Login Successful"}), 200)
+
 
         else:
             return make_response(jsonify({"message": "Wrong Password"}), 409)
 
     else:
-        return make_response(jsonify({"message": "Wrong username"}), 409)
+        return make_response(jsonify({"message": "User email is not registered"}), 409)
 
 # reset password
 @app.route('/api/v1/auth/reset_password', methods = ['POST'])
@@ -128,7 +129,7 @@ def change_password():
 @is_logged_in
 def logout():
     session.clear()
-    
+
     return make_response(jsonify({"message": "Logout Successful"}), 200)
 
 # Create new business
@@ -145,16 +146,21 @@ def create_business():
     if type(name) != str:
         return make_response(jsonify({"error": "name cannot be an integer"}), 409)
     # check if the business details already in the list, otherwise create the object in the list
-    available_names = [business.name for business in Business.businesses]
+    available_names = [business.name.lower() for business in Business.businesses]
+    user_id = session.get('user_id')
+
     if name in available_names:
+        return make_response(jsonify({"error": "Business already Exist, use another name"}), 409)
+
+    elif name.lower() in available_names:
         return make_response(jsonify({"error": "Business already Exist, use another name"}), 409)
 
     else:
         try:
             business = Business.register_business(
-                name, category, location)
+                name, category, location, user_id)
         except AssertionError as err:
-            return make_response(jsonify({"error": err.args[0]}), 409)
+            return jsonify({"error": err.args[0]}), 409
         myresponse = {'name': business.name, 'category': business.category,
                       'location': business.location}
     return make_response(jsonify(myresponse), 201)
@@ -178,11 +184,11 @@ def view_businesses():
 @app.route('/api/v1/auth/businesses/<int:id>/', methods=['GET'])
 @is_logged_in
 def get_business(id):
-    mybusiness = [business for business in Business.businesses if business.id == id]
-    if mybusiness:
-        mybusiness = mybusiness[0]
-        return make_response(jsonify({"business": {'name': mybusiness.name,
-        'category': mybusiness.category, 'location': mybusiness.location}}), 200)
+    target_business = [business for business in Business.businesses if business.id == id]
+    if target_business:
+        target_business = target_business[0]
+        return make_response(jsonify({"business": {'name': target_business.name,
+        'category': target_business.category, 'location': target_business.location}}), 200)
     else:
         return make_response(jsonify({"message": "Business not available", }), 404)
 
@@ -193,20 +199,22 @@ def get_business(id):
 @is_logged_in
 def update_business(id):
     data = request.get_json()
-    newname = data.get("name")
-    newcategory = data.get("category")
-    newlocation = data.get("location")
-    mybusiness = [business for business in Business.businesses if business.id == id]
-    if mybusiness:
-        available_names = [business.name for business in Business.businesses]
-        if newname in available_names: 
+
+    target_business = [business for business in Business.businesses if business.id == id]
+    
+    if target_business:
+        available_names = [business.name.lower() for business in Business.businesses]
+
+        if data.get("name").lower() in available_names: 
             return make_response(jsonify({"error": "Business already Exist, use another name"}), 409)
+        
         try:
-            mybusiness[0].update_business(
-            newname, newcategory, newlocation)
+            issuer_id = session.get('user_id')
+            target_business[0].update_business(data, issuer_id)
         except AssertionError as err:
             return make_response(jsonify({"error": err.args[0]}), 409)
         return make_response(jsonify({"message": "Business Updated", }), 201)
+    
     else:
         return make_response(jsonify({"message": "Business not available", }), 404)
 
@@ -216,10 +224,14 @@ def update_business(id):
 @app.route('/api/v1/auth/businesses/<int:id>', methods=['DELETE'])
 @is_logged_in
 def delete_business(id):
-    mybusiness = [business for business in Business.businesses if business.id == id]
-    if mybusiness:
-        mybusiness = mybusiness[0]
-        Business.businesses.remove(mybusiness)
+    target_business = [business for business in Business.businesses if business.id == id]
+    
+
+    if target_business:
+        if session.get('user_id') != target_business[0].userid:
+            return make_response(jsonify({"message": "You cannot delete someones Business", }), 404)
+        target_business = target_business[0]
+        Business.businesses.remove(target_business)
         return make_response(jsonify({"message": "Business deleted", }), 200)
     else:
         return make_response(jsonify({"message": "There is no Business with that ID", }), 404)
@@ -258,10 +270,10 @@ def reviews(businessid):
 @app.route('/api/v1/auth/<int:businessid>/reviews', methods=['GET'])
 @is_logged_in
 def myreviews(businessid):
-    myreviews = [review for review in business_reviews if review.businessid == businessid]
+    target_reviews = [review for review in business_reviews if review.businessid == businessid]
 
     review_info = {}
-    for a_review in myreviews:
+    for a_review in target_reviews:
         review_info['businessid'] = a_review.businessid
         review_info['description'] = a_review.reviewbody
     if review_info == {}:

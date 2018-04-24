@@ -182,7 +182,7 @@ class AppTestCase(unittest.TestCase):
         self.app.post('/api/v1/auth/businesses',
                       data=json.dumps(self.data), content_type='application/json')
         response = self.app.delete(
-            '/api/v1/auth/businesses/1',  data=json.dumps(self.data), content_type='application/json')
+            '/api/v1/auth/businesses/1',  content_type='application/json')
         result = json.loads(response.data.decode())
         self.assertIn(result["message"], "Business deleted")
         self.assertEqual(response.status_code, 200)

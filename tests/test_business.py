@@ -14,11 +14,15 @@ class AppTestCase(unittest.TestCase):
         app.testing = True
         self.app = app.test_client()
         self.data = {"name": "easyE", "category": "hardware",
-                     "location": "Mombasa", "description": "Selling hardware products"}
+                     "location": "Mombasa"}
         self.data1 = {"name": "A", "category": "software",
-                      "location": "Nakuru", "description": "Selling software products"}
+                      "location": "Nakuru"}
+        self.data2 = {"name": 1, "category": "software",
+                      "location": "Nakuru"}
+        self.data3 = { "category": "software",
+                      "location": "Nakuru"}
         self.data5 = {"name": "Andela", "category": "software",
-                      "location": "Nakuru", "description": "Selling software products"}
+                      "location": "Nakuru"}
         self.data6 = {"username": "john",
                       "email": "email@gmail.com", "password": "&._12345"}
 
@@ -68,6 +72,28 @@ class AppTestCase(unittest.TestCase):
         self.assertEqual(result["error"], "Invalid name")
         self.assertEqual(response.status_code, 409)
 
+    def test_integer_business_name(self):
+        self.app.post('/api/v1/auth/register',
+                      data=json.dumps(self.data6), content_type='application/json')
+        self.app.post('/api/v1/auth/login', data=json.dumps(self.data6),
+                      content_type='application/json')
+        response = self.app.post(
+            '/api/v1/auth/businesses', data=json.dumps(self.data2), content_type='application/json')
+        result = json.loads(response.data.decode())
+        self.assertEqual(result["error"], "name cannot be an integer")
+        self.assertEqual(response.status_code, 409)
+
+    def test_missing_business_name(self):
+        self.app.post('/api/v1/auth/register',
+                      data=json.dumps(self.data6), content_type='application/json')
+        self.app.post('/api/v1/auth/login', data=json.dumps(self.data6),
+                      content_type='application/json')
+        response = self.app.post(
+            '/api/v1/auth/businesses', data=json.dumps(self.data3), content_type='application/json')
+        result = json.loads(response.data.decode())
+        self.assertEqual(result["error"], "Missing key")
+        self.assertEqual(response.status_code, 500)
+
     def test_duplicate_business(self):
         self.app.post('/api/v1/auth/register',
                       data=json.dumps(self.data6), content_type='application/json')
@@ -103,7 +129,7 @@ class AppTestCase(unittest.TestCase):
         self.app.post('/api/v1/auth/businesses',
                       data=json.dumps(self.data), content_type='application/json')
         response = self.app.get(
-            '/api/v1/auth/business/1/', content_type='application/json')
+            '/api/v1/auth/businesses/1/', content_type='application/json')
         result = json.loads(response.data.decode())
         self.assertIn(self.data['name'], result['business']['name'])
         self.assertEqual(response.status_code, 200)
@@ -116,7 +142,7 @@ class AppTestCase(unittest.TestCase):
         self.app.post('/api/v1/auth/businesses',
                       data=json.dumps(self.data), content_type='application/json')
         response = self.app.put(
-            '/api/v1/auth/business/2', data=json.dumps(self.data5), content_type='application/json')
+            '/api/v1/auth/businesses/2', data=json.dumps(self.data5), content_type='application/json')
         result = json.loads(response.data.decode())
         self.assertEqual(result['message'], "Business not available")
         self.assertEqual(response.status_code, 404)
@@ -129,7 +155,7 @@ class AppTestCase(unittest.TestCase):
         self.app.post('/api/v1/auth/businesses',
                       data=json.dumps(self.data), content_type='application/json')
         response = self.app.put(
-            '/api/v1/auth/business/1',  data=json.dumps(self.data5), content_type='application/json')
+            '/api/v1/auth/businesses/1',  data=json.dumps(self.data5), content_type='application/json')
         result = json.loads(response.data.decode())
         self.assertIn(result["message"], "Business Updated")
         self.assertEqual(response.status_code, 201)
@@ -143,7 +169,7 @@ class AppTestCase(unittest.TestCase):
         self.app.post('/api/v1/auth/businesses',
                       data=json.dumps(self.data), content_type='application/json')
         response = self.app.put(
-            '/api/v1/auth/business/1',  data=json.dumps(self.data), content_type='application/json')
+            '/api/v1/auth/businesses/1',  data=json.dumps(self.data), content_type='application/json')
         result = json.loads(response.data.decode())
         self.assertIn(result["error"], "Business already Exist, use another name")
         self.assertEqual(response.status_code, 409)
@@ -156,7 +182,7 @@ class AppTestCase(unittest.TestCase):
         self.app.post('/api/v1/auth/businesses',
                       data=json.dumps(self.data), content_type='application/json')
         response = self.app.delete(
-            '/api/v1/auth/business/1/',  data=json.dumps(self.data), content_type='application/json')
+            '/api/v1/auth/businesses/1',  content_type='application/json')
         result = json.loads(response.data.decode())
         self.assertIn(result["message"], "Business deleted")
         self.assertEqual(response.status_code, 200)
@@ -169,9 +195,9 @@ class AppTestCase(unittest.TestCase):
         self.app.post('/api/v1/auth/businesses',
                       data=json.dumps(self.data), content_type='application/json')
         response = self.app.delete(
-            '/api/v1/auth/business/2/',  data=json.dumps(self.data), content_type='application/json')
+            '/api/v1/auth/businesses/2',  data=json.dumps(self.data), content_type='application/json')
         result = json.loads(response.data.decode())
-        self.assertIn(result["message"], "No such Business")
+        self.assertIn(result["message"], "There is no Business with that ID")
         self.assertEqual(response.status_code, 404)
 
 

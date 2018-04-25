@@ -3,10 +3,32 @@ body{
 }
 /*container*/
 .container{
-    width: 80%;
+    width: 79%;
     margin: auto;
-    background: #9eaec7
+    background: #d5eaeb;
+    border-radius: 5px;
    
+}
+#subheader{
+    background:  #333;
+    border-bottom: 1px solid #73c9e6;
+    margin-bottom: 30px;
+}
+#subheader .row{
+    height: 150px;
+}
+#subheader h2{
+    font-size: 20px;
+    margin: 0;
+    padding-bottom: 20px;
+}
+#subheader .subheader-content{
+    background: #333;
+    color: #fff;
+    border-radius: 0px;
+    padding: 40px;
+    width:400px;
+    margin : auto;
 }
 /*nav-tabs*/
 .nav-tabs{
@@ -16,31 +38,36 @@ body{
     margin-bottom: 20px;
     margin-top: 20px;
     border-bottom: 1px solid #ddd;
+    border-radius: 10px;
 }
 /* tab color */
 .nav-tabs>li>a {
-    background-color: #0fade2; 
+    background-color: #d5eaeb; 
     border-color: white;
     color: black;
+    border-radius: 10px;
   }
   
   /* active tab color */
   .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {
     color: #fff;
-    background-color: #0b21e6;
-    border: 1px solid #0d2bee;
+    background-color: #73c9e6;
+    border: 1px solid white;
+    border-radius: 10px;
+    
   }
   
   /* hover tab color */
   .nav-tabs>li>a:hover {
     border-color: #000000;
-    background-color: #0b21e6;
-    border-radius: 0px;
+    background-color: #73c9e6;
+    border-radius: 10px;
   }
 
   /*nav bar*/
   .navbar{
-    background-color: #0fade2;
+    background-color: #d5eaeb;
+    border-bottom:  #73c9e6 2px solid;
   }
 
   .navbar-brand{
@@ -54,7 +81,7 @@ body{
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background-color: #0fade2;
+    background-color: #d5eaeb;
 }
 
 li {
@@ -71,7 +98,8 @@ li a {
 
 /* Change the link color to #111 (black) on hover */
 li a:hover {
-    background-color: #0b21e6;
+    background-color: #73c9e6;
+    border-radius: 10px;
 }
 /*form */
 .my-form{

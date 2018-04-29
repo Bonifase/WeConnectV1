@@ -160,6 +160,19 @@ class AppTestCase(unittest.TestCase):
         self.assertIn(result["message"], "Business Updated")
         self.assertEqual(response.status_code, 201)
 
+    def test_update_unavailable_business(self):
+        self.app.post('/api/v1/auth/register',
+                      data=json.dumps(self.data6), content_type='application/json')
+        self.app.post('/api/v1/auth/login', data=json.dumps(self.data6),
+                      content_type='application/json')
+        self.app.post('/api/v1/auth/businesses',
+                      data=json.dumps(self.data), content_type='application/json')
+        response = self.app.put(
+            '/api/v1/auth/businesses/2',  data=json.dumps(self.data5), content_type='application/json')
+        result = json.loads(response.data.decode())
+        self.assertIn(result["message"], "Business not available")
+        self.assertEqual(response.status_code, 404)
+
 
     def test_update_with_available_name(self):
         self.app.post('/api/v1/auth/register',

@@ -149,10 +149,7 @@ def create_business():
     available_names = [business.name.lower() for business in Business.businesses]
     user_id = session.get('user_id')
 
-    if name in available_names:
-        return make_response(jsonify({"error": "Business already Exist, use another name"}), 409)
-
-    elif name.lower() in available_names:
+    if name.lower()  in available_names:
         return make_response(jsonify({"error": "Business already Exist, use another name"}), 409)
 
     else:
@@ -251,10 +248,10 @@ def reviews(businessid):
         return make_response(jsonify({"error": "Review cannot be an integer"}), 409)
 
     if reviewbody.strip() == "":
-        return make_response(jsonify({"error": "Empty review not allowed"}))
+        return make_response(jsonify({"error": "Empty review not allowed"}), 409)
 
-    if len(reviewbody) < 5:
-        return make_response(jsonify({"error": "Review too short"}))
+    if len(reviewbody) < 2:
+        return make_response(jsonify({"error": "Review too short"}), 409)
 
     mybusiness = [
         business for business in Business.businesses if business.id == businessid]

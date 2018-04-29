@@ -45,6 +45,12 @@ class AppTestCase(unittest.TestCase):
         self.data12 = {"username": 1,"email": "username@gmail.com", "password": "&._12345"}
         self.data13 = {"username": "user","email": 2, "password": "&._12345"}
         self.data14 = {"username": "user","email":"username@gmail.com", "password": 3}
+        self.data15 = {"username": "john","email": "email@gmail.com",
+                       "newpassword": "123456789"}
+        self.data16 = {"username": "john","email": "email@gmail.com",
+                      "password": "&._12345", "newpassword": 1}
+        self.data17 = {"username": "john","email": "email@gmail.com",
+                      "password": "&._12345", "newpassword": "g"}              
 
         
 
@@ -90,7 +96,7 @@ class AppTestCase(unittest.TestCase):
         self.assertEqual(result["error"], "email cannot be an integer")
         self.assertEqual(response.status_code, 409)
 
-    def test_no_string_password_registrartion(self):
+    def test_non_string_password_registrartion(self):
         response = self.app.post(
             '/api/v1/auth/register', data=json.dumps(self.data14), content_type='application/json')
         result = json.loads(response.data.decode())
@@ -168,6 +174,24 @@ class AppTestCase(unittest.TestCase):
         self.assertEqual(result2["message"], "Login Successful")
         self.assertEqual(response2.status_code, 200)
 
+    def test_empty_password(self):
+        self.app.post('/api/v1/auth/login', data=json.dumps(self.data),
+                      content_type='application/json')
+        response1 = self.app.post('/api/v1/auth/change-password',
+                                  data=json.dumps(self.data15), content_type='application/json')
+        result1 = json.loads(response1.data.decode())
+        self.assertEqual(result1["message"], "Enter your Current Password")
+        self.assertEqual(response1.status_code, 409)
+    
+    def test_invalid_password_format(self):
+        self.app.post('/api/v1/auth/login', data=json.dumps(self.data),
+                      content_type='application/json')
+        response1 = self.app.post('/api/v1/auth/reset-password',
+                                  data=json.dumps(self.data16), content_type='application/json')
+        result1 = json.loads(response1.data.decode())
+        self.assertEqual(result1["message"], "Wrong format")
+        self.assertEqual(response1.status_code, 409)
+
     def test_current_password(self):
         self.app.post('/api/v1/auth/login', data=json.dumps(self.data),
                       content_type='application/json')
@@ -189,6 +213,14 @@ class AppTestCase(unittest.TestCase):
         result2 = json.loads(response2.data.decode())
         self.assertEqual(result2["message"], "Login Successful")
         self.assertEqual(response2.status_code, 200)
+
+    def test_reset_invalid_password(self):
+        response = self.app.post('/api/v1/auth/reset-password',
+                                  data=json.dumps(self.data17), content_type='application/json')
+        result = json.loads(response.data.decode())
+        self.assertEqual(result["error"], "Invalid password")
+        self.assertEqual(response.status_code, 409)
+
 
     def test_logout(self):
         response = self.app.post(

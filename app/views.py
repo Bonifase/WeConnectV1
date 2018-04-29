@@ -68,7 +68,7 @@ def login():
         return make_response(jsonify({"message": "User email is not registered"}), 409)
 
 # reset password
-@app.route('/api/v1/auth/reset_password', methods = ['POST'])
+@app.route('/api/v1/auth/reset-password', methods = ['POST'])
 def reset_password():
     data = request.get_json()
     email = data.get('email')

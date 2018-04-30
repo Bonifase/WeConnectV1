@@ -46,8 +46,8 @@ object containing user details and login the user into the system
 + Request (application/json)
 
         {
-            "username": "myname",
-            "password": "12345"
+            "email": "user@gmail.com",
+            "password": "user123"
             
         }
 
@@ -58,7 +58,7 @@ User gets the responses below when they provide wrong login details during login
     + Body
 
             {
-                "message": "Wrong Password",
+                "message": "Wrong email",
                 "message": "User email is not registered"
             }
 
@@ -117,10 +117,10 @@ User sees the message below on successful logout
             {
                 "message": "Logout Successful"
             }
-## Create a New Business  [/api/v1/auth/businesses']
+## Create a New Business  [/api/v1/auth/businesses',]
 Registered and Logged in user  is able to create a new business.
 ### businesses [POST]
-
+A sample request is shown below.
 + Request (application/json)
 
         {
@@ -140,6 +140,53 @@ Registered and Logged in user  is able to create a new business.
                 "message": "Business already Exist, use another name"
                 
             }
+
++ Response 201 (application/json)
+
+    + Headers
+    
+    + Body
+
+            {
+                "name":"easyE", 
+                "category":"hardware", 
+                "location":"Mombasa"
+            }
+
+## Get all Businesses  [/api/v1/auth/businesses']
+Retrieves all businesses stored in the system. User login is required..
+### businesses [GET]
+
++ Response 201 (application/json)
+
+    + Headers
+    
+    + Body
+
+            {
+                "name":"easyE", 
+                "category":"hardware", 
+                "location":"Mombasa"
+            }
+
+## Get a Businesses by ID  [/api/v1/auth/businesses/id']
+Retrieves one business stored in the the syatem. Login is required and business id must be supplied in the URL
+### businesses [GET]
+
++ Response 201 (application/json)
+
+    + Headers
+    
+    + Body
+
+            {
+                "name":"easyE", 
+                "category":"hardware", 
+                "location":"Mombasa"
+            }
+## Update a Businesses by ID  [/api/v1/auth/businesses/business_id']
+Enable user to make changes on one business stored in the the syatem. Login is required and business id must be supplied in the URL. Only users who have created the business have this privilage.
+### businesses [PUT]
 
 + Response 201 (application/json)
 

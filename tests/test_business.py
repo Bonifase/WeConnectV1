@@ -80,7 +80,7 @@ class AppTestCase(unittest.TestCase):
         response = self.app.post(
             '/api/v1/auth/businesses', data=json.dumps(self.data2), content_type='application/json')
         result = json.loads(response.data.decode())
-        self.assertEqual(result["error"], "name cannot be an integer")
+        self.assertEqual(result["error"], "Invalid name")
         self.assertEqual(response.status_code, 409)
 
     def test_missing_business_name(self):
@@ -91,7 +91,7 @@ class AppTestCase(unittest.TestCase):
         response = self.app.post(
             '/api/v1/auth/businesses', data=json.dumps(self.data3), content_type='application/json')
         result = json.loads(response.data.decode())
-        self.assertEqual(result["error"], "Missing key")
+        self.assertEqual(result["error"], "Missing name key")
         self.assertEqual(response.status_code, 500)
 
     def test_duplicate_business(self):
@@ -142,7 +142,7 @@ class AppTestCase(unittest.TestCase):
         self.app.post('/api/v1/auth/businesses',
                       data=json.dumps(self.data), content_type='application/json')
         response = self.app.put(
-            '/api/v1/auth/businesses/2', data=json.dumps(self.data5), content_type='application/json')
+            '/api/v1/auth/businesses/5', data=json.dumps(self.data5), content_type='application/json')
         result = json.loads(response.data.decode())
         self.assertEqual(result['message'], "Business not available")
         self.assertEqual(response.status_code, 404)

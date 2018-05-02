@@ -3,11 +3,11 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/2e2b8561b617ae21d04d/maintainability)](https://codeclimate.com/github/Bonifase/WeConnect-/maintainability)
 
 
-[![CircleCI](https://circleci.com/gh/andela/hc-bulls/tree/develop.svg?style=svg)](https://circleci.com/gh/andela/hc-bulls/tree/develop)
+[![CircleCI](https://circleci.com/gh/Bonifase/WeConnect-/tree/master.svg?style=svg)](https://circleci.com/gh/Bonifase/WeConnect-/tree/master)
 # WeConnect
 WeConnect provides a platform that brings businesses and individuals together.
 This platform creates awareness for businesses and gives the users the ability to write reviews about the businesses they have interacted with. 
-It is live here: [http://weconnect./](http://healthchecks.io/)
+
 
 The building blocks are:
 

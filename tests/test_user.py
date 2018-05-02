@@ -15,7 +15,8 @@ class AppTestCase(unittest.TestCase):
         app.testing = True
         self.app = app.test_client()
         self.data = {"username": "john",
-                     "email": "email@gmail.com", "password": "&._12345"}
+                     "email": "email@gmail.com", "password": "&._12345",
+                      "newpassword":"&._12345"}
         self.data1 = {"": "james", "email": "something@gmail.com",
                       "password": "&._12345"}
         self.data2 = {"username": "Bill",
@@ -175,7 +176,25 @@ class AppTestCase(unittest.TestCase):
         self.assertEqual(result2["message"], "Login Successful")
         self.assertEqual(response2.status_code, 200)
 
-    def test_empty_password(self):
+    def change_password_with_wrong_email(self):
+        self.app.post('/api/v1/auth/login', data=json.dumps(self.data),
+                      content_type='application/json')
+        response1 = self.app.post('/api/v1/auth/change-password',
+                                  data=json.dumps(self.data3), content_type='application/json')
+        result1 = json.loads(response1.data.decode())
+        self.assertEqual(result1["message"], "User with that email does not exist")
+
+    def test_change_with_same_password(self):
+        self.app.post('/api/v1/auth/login', data=json.dumps(self.data),
+                      content_type='application/json')
+        response1 = self.app.post('/api/v1/auth/change-password',
+                                  data=json.dumps(self.data), content_type='application/json')
+        result1 = json.loads(response1.data.decode())
+        self.assertEqual(result1["message"], "Use a Different New Password")
+        self.assertEqual(response1.status_code, 409)
+
+
+    def test_empty_current_password(self):
         self.app.post('/api/v1/auth/login', data=json.dumps(self.data),
                       content_type='application/json')
         response1 = self.app.post('/api/v1/auth/change-password',
@@ -199,7 +218,6 @@ class AppTestCase(unittest.TestCase):
         response1 = self.app.post('/api/v1/auth/change-password',
                                   data=json.dumps(self.data11), content_type='application/json')
         result1 = json.loads(response1.data.decode())
-        print('ygvggyy', result1)
         self.assertEqual(result1["message"], "Enter your Current Password")
         self.assertEqual(response1.status_code, 409)
 

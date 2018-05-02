@@ -75,10 +75,7 @@ def reset_password():
     cleaned_data = clean_data(data)
     email = cleaned_data.get('email')
     newpassword = cleaned_data.get('newpassword')
-    if email is None:
-        return make_response(jsonify({"message": "Missing key"}), 500)
-    if type(newpassword) != str:
-        return make_response(jsonify({"message": "Wrong format"}), 409)
+       
     user = [user for user in User.users if user.email == email]
     if user:
         try:
@@ -125,17 +122,14 @@ def change_password():
             return make_response(jsonify({"error": err.args[0]}), 409)
     return make_response(jsonify({"message": "Reset Successful"}), 201)
 
-# Logout User
-
-
+"""USER LOGOUT"""
 @app.route('/api/v1/auth/logout', methods=['POST'])
 @is_logged_in
 def logout():
     session.clear()
-
     return make_response(jsonify({"message": "Logout Successful"}), 200)
 
-# This endpoint create new business
+"""CREATE A NEW BUSINESS"""
 @app.route('/api/v1/auth/businesses', methods=['POST'])
 @is_logged_in
 def create_business():
@@ -171,8 +165,7 @@ def create_business():
         return make_response(jsonify(myresponse), 201)
 
 
-# Get all the businesses
-
+"""RETRIEVE ALL BUSINNESSES"""
 
 @app.route('/api/v1/auth/businesses', methods=['GET'])
 @is_logged_in
@@ -184,8 +177,7 @@ def view_businesses():
     else:
         return make_response(jsonify({"businesses": mybusinesses}), 200)
 
-# Get a business by id
-
+"""RETRIEVE A PARTICULAR BUSINESS"""
 
 @app.route('/api/v1/auth/businesses/<int:id>/', methods=['GET'])
 @is_logged_in
@@ -198,8 +190,7 @@ def get_business(id):
     else:
         return make_response(jsonify({"message": "Business not available", }), 404)
 
-# Update business
-
+"""UPDATE A BUSINESS"""
 
 @app.route('/api/v1/auth/businesses/<int:id>', methods=['PUT'])
 @is_logged_in
@@ -228,8 +219,7 @@ def update_business(id):
     else:
         return make_response(jsonify({"message": "Business not available" }), 404)
 
-# Delete business
-
+"""DELETE A BUSINESS FROM THE SYSTEM"""
 
 @app.route('/api/v1/auth/businesses/<int:id>', methods=['DELETE'])
 @is_logged_in
@@ -246,8 +236,7 @@ def delete_business(id):
     else:
         return make_response(jsonify({"message": "There is no Business with that ID" }), 404)
 
-# Add a review for a business
-
+"""ADD REVIEWS TO A BUSINESS"""
 
 @app.route('/api/v1/auth/<int:businessid>/reviews', methods=['POST'])
 @is_logged_in
@@ -276,7 +265,7 @@ def reviews(businessid):
         return make_response(jsonify({"message": "Business with that ID does not exist"}), 404)
 
 
-# Get all reviews for a business
+"""RETRIEVE ALL REVIEWS THAT BELONGS TO A BUSINESS"""
 @app.route('/api/v1/auth/<int:businessid>/reviews', methods=['GET'])
 @is_logged_in
 def myreviews(businessid):

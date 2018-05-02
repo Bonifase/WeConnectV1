@@ -76,4 +76,4 @@ class User:
             self._password = value
             return
 
-        assert 0, 'Invalid password'
+        assert 0, 'Invalid new password'

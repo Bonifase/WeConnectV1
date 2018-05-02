@@ -206,7 +206,7 @@ class AppTestCase(unittest.TestCase):
         self.assertIn(result["error"], "Business already Exist, use another name")
         self.assertEqual(response.status_code, 409)
 
-    def test_update_with_empty_name(self):
+    def test_update_with_invalid_name(self):
         self.app.post('/api/v1/auth/register',
                       data=json.dumps(self.data6), content_type='application/json')
         self.app.post('/api/v1/auth/login', data=json.dumps(self.data6),
@@ -219,7 +219,7 @@ class AppTestCase(unittest.TestCase):
         self.assertIn(result["error"], "Invalid name")
         self.assertEqual(response.status_code, 409)
 
-    def test_update_with_empty_category(self):
+    def test_update_with_invalid_category(self):
         self.app.post('/api/v1/auth/register',
                       data=json.dumps(self.data6), content_type='application/json')
         self.app.post('/api/v1/auth/login', data=json.dumps(self.data6),
@@ -232,7 +232,7 @@ class AppTestCase(unittest.TestCase):
         self.assertIn(result["error"], "Invalid category")
         self.assertEqual(response.status_code, 409)
 
-    def test_update_with_empty_category(self):
+    def test_update_with_invalid_category(self):
         self.app.post('/api/v1/auth/register',
                       data=json.dumps(self.data6), content_type='application/json')
         self.app.post('/api/v1/auth/login', data=json.dumps(self.data6),

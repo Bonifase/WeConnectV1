@@ -21,7 +21,8 @@ class AppTestCase(unittest.TestCase):
         self.data2 = {"username": "Bill",
                       "email": "bill@gmail.com", "password": "&._12345k"}
         self.data3 = {"username": "",
-                      "email": "bills@gmail.com", "password": "&._12345"}
+                      "email": "bills@gmail.com", "password": "&._12345", 
+                      "newpassword": "&._1234"}
         self.data4 = {"username": "james", "email": "something",
                       "password": "&._12345"}
         self.data5 = {"username": "john",
@@ -213,6 +214,13 @@ class AppTestCase(unittest.TestCase):
         result2 = json.loads(response2.data.decode())
         self.assertEqual(result2["message"], "Login Successful")
         self.assertEqual(response2.status_code, 200)
+
+    def test_reset_unregistered_user(self):
+        response1 = self.app.post('/api/v1/auth/reset-password',
+                                  data=json.dumps(self.data3), content_type='application/json')
+        result1 = json.loads(response1.data.decode())
+        self.assertEqual(result1["message"], "User with that email does not exist")
+
 
     def test_reset_invalid_password(self):
         response = self.app.post('/api/v1/auth/reset-password',

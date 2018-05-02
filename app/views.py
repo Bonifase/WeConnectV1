@@ -20,7 +20,7 @@ business_reviews = []
 
 @app.route('/api/v1/auth/register',  methods=['POST'])
 def register_user():
-    if request.method == 'POST':
+    
         data = request.get_json()
         cleaned_data = clean_data(data)
         username = cleaned_data.get('username')
@@ -40,11 +40,7 @@ def register_user():
                 return make_response(jsonify({'error': err.args[0]}), 409)
 
         return make_response(jsonify({"message": "Registration Successful"}), 201)
-
-    else:
-         message="method not allowed when registering user.Use post"
-         response=jsonify({"message":message,"status_code":405})
-         return response
+         
 
 # Login user
 
@@ -149,7 +145,6 @@ def create_business():
     category = cleaned_data.get("category")
     location = cleaned_data.get("location")
 
-    
     if name is None:
         return make_response(jsonify({"error": "Missing name key"}), 500)
 

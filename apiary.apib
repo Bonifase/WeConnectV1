@@ -25,8 +25,8 @@ User sees this response when they try to register twice into the system
     + Body
 
             {
-                "message": "User Details Exist",
-                "message": "Make a complete entry"
+                "message": "User Details Exist"
+               
             }
 
 + Response 201 (application/json)
@@ -58,8 +58,8 @@ User gets the responses below when they provide wrong login details during login
     + Body
 
             {
-                "message": "Wrong email",
-                "message": "User email is not registered"
+                "message": "User email is not registered",
+               
             }
 
 + Response 201 (application/json)
@@ -78,7 +78,7 @@ Logged in user  is able to reset password to get a new password.
 + Request (application/json)
 
         {
-            "username": "myname",
+            "email": "myname",
             "newpassword": "123456"
             
         }
@@ -90,8 +90,8 @@ Logged in user  is able to reset password to get a new password.
     + Body
 
             {
-                "message": "Type Different Password"},
-                "message": "Enter the current password"
+                "message": "User with that email does not exist"},
+               
             }
 
 + Response 201 (application/json)
@@ -118,7 +118,8 @@ User sees the message below on successful logout
                 "message": "Logout Successful"
             }
 ## Create a New Business  [/api/v1/auth/businesses',]
-Registered and Logged in user  is able to create a new business.
+Registered and Logged in user  is able to create a new business. This endpoint accepts JSON data as request,
+register the business details and return the registed business data as a dictionary.
 ### businesses [POST]
 A sample request is shown below.
 + Request (application/json)
@@ -154,7 +155,8 @@ A sample request is shown below.
             }
 
 ## Get all Businesses  [/api/v1/auth/businesses']
-Retrieves all businesses stored in the system. User login is required..
+This endpoint is used to retrieve all businesses stored in the system. User login is required.
+Retrurn business objects in form of a dictionary.
 ### businesses [GET]
 
 + Response 201 (application/json)
@@ -170,7 +172,8 @@ Retrieves all businesses stored in the system. User login is required..
             }
 
 ## Get a Businesses by ID  [/api/v1/auth/businesses/id']
-Retrieves one business stored in the the syatem. Login is required and business id must be supplied in the URL
+This endpoint retrieves one business stored in the the system. 
+Login is required and business id must be supplied in the URL
 ### businesses [GET]
 
 + Response 201 (application/json)
@@ -185,8 +188,8 @@ Retrieves one business stored in the the syatem. Login is required and business 
                 "location":"Mombasa"
             }
 ## Update a Businesses by ID  [/api/v1/auth/businesses/business_id']
-Enable user to make changes on one business stored in the the syatem. 
-Login is required and business id must be supplied in the URL. 
+This endpoint enables user to make changes on one business stored in the the syatem. 
+Login is required and business ID must be supplied in the URL. 
 Only users who have created the business have this privilage.
 It takes a JSON object containing the datails you wish to update.
 ### businesses [PUT]
@@ -230,7 +233,7 @@ A sample request is shown below.
                 "message": "Business Updated" 
             }
 ## Delete a Businesses by ID  [/api/v1/auth/businesses/ Id']
-Enable user to delete a business stored in the the system. 
+This endpoint enables users to delete a business stored in the the system. 
 Login is required and business id must be supplied in the URL. 
 Only users who have created the business can delete it.
 
@@ -282,7 +285,7 @@ A sample json request is shown below.
             
         }
 
-Sample responces are shown below.
+ 
 + Response 404 (application/json)
 
     + Headers
@@ -305,7 +308,7 @@ Sample responces are shown below.
             }
 ## Retrieve all Reviews for a Business  [/api/v1/auth/<int:businessid>/review']
 Enable user to retrieve all reviews of a business stored in the the system. 
-Login is required and business id must be supplied in the URL. 
+Login is required and business ID must be supplied in the URL. 
 Users can see all reviews for any business.
 
 ### businesses_id/reviews [GET]
@@ -328,7 +331,7 @@ Sample responces are shown below.
     + Body
 
             {
-                "message": "Business does not exist"
+                "message": "No Reviews available for that Business"
                 
             }
 + Response 201 (application/json)
@@ -338,5 +341,9 @@ Sample responces are shown below.
     + Body
 
             {
-                "message": "" 
-            }
+              "Reviews": [{
+                         "3": 
+                         [2,"This is my first review"],
+                         "4": 
+                         [2,"This is my second review"]}]
+             }

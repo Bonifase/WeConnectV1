@@ -14,6 +14,10 @@ from app.helpers import clean_data
 
 business_reviews = []
 
+@app.route('/')
+def index():
+    return jsonify("Welcome To WeConnect")
+
 
 # Endpoint to Register user and ssaving the details in a list called users
 
@@ -273,6 +277,6 @@ def myreviews(businessid):
     for review in business_reviews if review.businessid == businessid}]
     
     if target_reviews == [{}]:
-        return make_response(jsonify({"message": "No Reviews available"}), 404)
+        return make_response(jsonify({"message": "No Reviews available for that Business"}), 404)
     else:
         return make_response(jsonify({"Reviews": target_reviews})), 200

@@ -5,7 +5,7 @@ import tempfile
 import json
 from flask import jsonify
 
-from app.models.review import Review
+from app.models.business import Review
 
 
 class AppTestCase(unittest.TestCase):
@@ -97,7 +97,7 @@ class AppTestCase(unittest.TestCase):
         self.app.post('/api/v1/auth/businesses',
                       data=json.dumps(self.data4), content_type='application/json')
         response = self.app.post(
-            '/api/v1/auth/2/reviews', data=json.dumps(self.data), content_type='application/json')
+            '/api/v1/auth/5/reviews', data=json.dumps(self.data), content_type='application/json')
         result = json.loads(response.data.decode())
         self.assertEqual(result["message"],
                          "Business with that ID does not exist")
@@ -115,8 +115,7 @@ class AppTestCase(unittest.TestCase):
         response = self.app.get(
             '/api/v1/auth/1/reviews', data=json.dumps(self.data), content_type='application/json')
         result = json.loads(response.data.decode())
-        self.assertIn(self.data["description"],
-                      result['Reviews']['description'])
+        self.assertIn(self.data["description"], result["Reviews"][0]["1"][1])
         self.assertEqual(response.status_code, 200)
 
     def test_unvailable_reviews(self):
@@ -126,7 +125,9 @@ class AppTestCase(unittest.TestCase):
                       content_type='application/json')
         self.app.post('/api/v1/auth/businesses',
                       data=json.dumps(self.data4), content_type='application/json')
-        response = self.app.get('/api/v1/auth/2/reviews',
+        self.app.post('/api/v1/auth/1/reviews', 
+                     data=json.dumps(self.data), content_type='application/json')
+        response = self.app.get('/api/v1/auth/5/reviews',
                                 content_type='application/json')
         result = json.loads(response.data.decode())
         self.assertEqual(result["message"], "No Reviews available")

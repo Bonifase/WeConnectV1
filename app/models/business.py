@@ -48,3 +48,38 @@ class Business:
             return
         assert 0, 'Invalid name'
 
+    @property
+    def category(self):
+        return self._category
+
+    @category.setter
+    def category(self, value):
+        pattern = r'[a-zA-Z\. ]{1,15}'
+        match = re.search(pattern, value)
+        if match:
+            self._category = value
+            return
+        assert 0, 'Invalid category'
+
+    @property
+    def location(self):
+        return self._location
+
+    @location.setter
+    def location(self, value):
+        pattern = r'[a-zA-Z\. ]{3,10}'
+        match = re.search(pattern, value)
+        if match:
+            self._location= value
+            return
+        assert 0, 'Invalid location'
+
+class Review:
+    business_reviews = []
+    
+    class_counter= 1
+    def __init__(self, description, businessid):
+        self.description = description
+        self.businessid = businessid
+        self.id= Review.class_counter
+        Review.class_counter += 1

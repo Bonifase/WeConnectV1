@@ -12,7 +12,7 @@ object containing user details and create an account used to login into the syst
 + Request (application/json)
 
         {
-            "username": "",
+            "username": "user",
             "email": "useremail@gmail.com"
             "password": "12345"
             
@@ -36,7 +36,7 @@ This response is returned when the user registration has been successful
     + Body
 
             {
-                "message": "Registered Successful"
+                "message": "Registration Successful"
             }
 ## Login a User  [/api/v1/auth/login]
 You may login to your own account using this action. It takes a JSON
@@ -185,9 +185,41 @@ Retrieves one business stored in the the syatem. Login is required and business 
                 "location":"Mombasa"
             }
 ## Update a Businesses by ID  [/api/v1/auth/businesses/business_id']
-Enable user to make changes on one business stored in the the syatem. Login is required and business id must be supplied in the URL. Only users who have created the business have this privilage.
+Enable user to make changes on one business stored in the the syatem. 
+Login is required and business id must be supplied in the URL. 
+Only users who have created the business have this privilage.
+It takes a JSON object containing the datails you wish to update.
 ### businesses [PUT]
+A sample request is shown below.
++ Request (application/json)
 
+        {
+            "newname":"easyE", 
+            "newcategory":"hardware", 
+            "newlocation":"Mombasa"
+            
+        }
+
++ Response 409 (application/json)
+
+    + Headers
+    
+    + Body
+
+            {
+                "message": "Business already Exist, use another name"
+                
+            }
++ Response 404 (application/json)
+
+    + Headers
+    
+    + Body
+
+            {
+                "message": "Business does not exist"
+                
+            }
 + Response 201 (application/json)
 
     + Headers
@@ -195,7 +227,116 @@ Enable user to make changes on one business stored in the the syatem. Login is r
     + Body
 
             {
-                "name":"easyE", 
-                "category":"hardware", 
-                "location":"Mombasa"
+                "message": "Business Updated" 
+            }
+## Delete a Businesses by ID  [/api/v1/auth/businesses/ Id']
+Enable user to delete a business stored in the the system. 
+Login is required and business id must be supplied in the URL. 
+Only users who have created the business can delete it.
+
+### businesses [DELETE]
+Sample responces are shown below.
+
++ Response 409 (application/json)
+
+    + Headers
+    
+    + Body
+
+            {
+                "message": "You cannot delete someones Business"
+                
+            }
++ Response 404 (application/json)
+
+    + Headers
+    
+    + Body
+
+            {
+                "message": "Business does not exist"
+                
+            }
++ Response 201 (application/json)
+
+    + Headers
+    
+    + Body
+
+            {
+                "message": "Business deleted" 
+            }
+## Add a Review for a Business  [/api/v1/auth/<int:businessid>/reviews']
+Enable user to add a review to a business stored in the the system. 
+Login is required and business id must be supplied in the URL. 
+Users can add review to any business. Empty reiews and reviews that are too short 
+are not allowed.
+
+### businesses_id/reviews [POST]
+
+A sample json request is shown below.
++ Request (application/json)
+
+        {
+            "description":"This is the first review for this business"
+            
+        }
+
+Sample responces are shown below.
++ Response 404 (application/json)
+
+    + Headers
+    
+    + Body
+
+            {
+                "message": "Business with that ID does not exist"
+                
+            }
++ Response 201 (application/json)
+
+    + Headers
+    
+    + Body
+
+            {
+                "message": "Review added Successfully"
+                
+            }
+## Retrieve all Reviews for a Business  [/api/v1/auth/<int:businessid>/review']
+Enable user to retrieve all reviews of a business stored in the the system. 
+Login is required and business id must be supplied in the URL. 
+Users can see all reviews for any business.
+
+### businesses_id/reviews [GET]
+Sample responces are shown below.
+
++ Response 409 (application/json)
+
+    + Headers
+    
+    + Body
+
+            {
+                "message": "No reviews available"
+                
+            }
++ Response 404 (application/json)
+
+    + Headers
+    
+    + Body
+
+            {
+                "message": "Business does not exist"
+                
+            }
++ Response 201 (application/json)
+
+    + Headers
+    
+    + Body
+
+            {
+                "message": "" 
             }

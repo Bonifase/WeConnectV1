@@ -3,7 +3,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/2e2b8561b617ae21d04d/maintainability)](https://codeclimate.com/github/Bonifase/WeConnect-/maintainability)
 
 
-[![CircleCI](https://circleci.com/gh/Bonifase/WeConnect-/tree/ft-fix-code-smells.svg?style=svg)](https://circleci.com/gh/Bonifase/WeConnect-/tree/ft-fix-code-smells)
+[![CircleCI](https://circleci.com/gh/Bonifase/WeConnect-/tree/develop.svg?style=svg)](https://circleci.com/gh/Bonifase/WeConnect-/tree/develop)
 # WeConnect
 WeConnect provides a platform that brings businesses and individuals together.
 This platform creates awareness for businesses and gives the users the ability to write reviews about the businesses they have interacted with. 

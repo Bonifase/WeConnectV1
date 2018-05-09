@@ -130,5 +130,5 @@ class AppTestCase(unittest.TestCase):
         response = self.app.get('/api/v1/auth/5/reviews',
                                 content_type='application/json')
         result = json.loads(response.data.decode())
-        self.assertEqual(result["message"], "No Reviews available")
+        self.assertEqual(result["message"], "No Reviews available for that Business")
         self.assertEqual(response.status_code, 404)
